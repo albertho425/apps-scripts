@@ -1,64 +1,67 @@
-<!-- page template for editing an entry from spreadsheet -->
+<!-- page template for editing an entry to spreadhseet -->
+
 
 <h4>Edit MEL Session</h4>
 
+
 <div class="edit-customer-form">
-  <div class="form-group">
-    <label for="customer-id">Booking ID</label>
-    <input type="text" class="form-control" id="customer-id" readonly>
-  </div>
-  <div class="form-group">
-    <label for="first-name">First Name</label>
-    <input type="text" class="form-control" id="first-name">
-  </div>
-  <div class="form-group">
-    <label for="last-name">Last Name</label>
-    <input type="text" class="form-control" id="last-name">
+  <div class="form-row">
+    <div class="form-group col-2">
+      <label for="customer-id">Booking ID</label>
+      <input type="text" class="form-control" id="customer-id" readonly>
+    </div>
+    <div class="form-group col-2">
+      <label for="first-name">First Name</label>
+      <input type="text" class="form-control" id="first-name">
+    </div>
+    <div class="form-group col-2">
+      <label for="last-name">Last Name</label>
+      <input type="text" class="form-control" id="last-name">
+    </div>
+    <div class="form-group col-2">
+      <label for="phone-number">Phone Number</label>
+      <input type="text" class="form-control" id="phone-number">
+    </div>
+    <div class="form-group col-2">
+      <label for="event-name">Event Name</label>
+      <input type="text" class="form-control" id="event-name">
+    </div>
+    <div class="form-group col-2">
+      <label for="department">Department</label>
+      <input type="text" class="form-control" id="department">
+    </div>
   </div>
 
-<!-- One row -->
-<div class="form-row">
-  <div class="form-group col-3">
-    <label for="event-name">Event Name</label>
-    <input type="text" class="form-control" id="event-name">
+  <div class="form-row">
+    <div class="form-group col-2">
+      <label for="field">field</label>
+      <input type="text" class="form-control" id="field">
+    </div>
+    <div class="form-group col-2">
+      <label for="field">field</label>
+      <input type="text" class="form-control" id="field">
+    </div>
+    <div class="form-group col-2">
+      <label for="field">field</label>
+      <input type="text" class="form-control" id="field">
+    </div>
+    <div class="form-group col-2">
+      <label for="field">field</label>
+      <input type="text" class="form-control" id="field">
+    </div>
+    <div class="form-group col-2">
+      <label for="field">field</label>
+      <input type="text" class="form-control" id="field">
+    </div>
+    <div class="form-group col-2">
+      <label for="department">field</label>
+      <input type="text" class="form-control" id="field">
+    </div>
   </div>
-  <div class="form-group col-3">
-    <label for="department">Department</label>
-    <input type="text" class="form-control" id="department">
-  </div>
-  <div class="form-group col-3">
-    <label for="field">Field</label>
-    <input type="text" class="form-control" id="field">
-  </div>
-  <div class="form-group col-3">
-    <label for="field">Field</label>
-    <input type="text" class="form-control" id="field">
-  </div>
+
+  <button class="btn btn-success" id="save-changes">Save</button>
+  <button class="btn btn-primary" id="cancel-changes">Cancel</button>
 </div>
-
-<!-- One row -->
-<div class="form-row">
-  <div class="form-group col-3">
-    <label for="field">Field</label>
-    <input type="text" class="form-control" id="field">
-  </div>
-  <div class="form-group col-3">
-    <label for="field">Field</label>
-    <input type="text" class="form-control" id="field">
-  </div>
-  <div class="form-group col-3">
-    <label for="field">Field</label>
-    <input type="text" class="form-control" id="field">
-  </div>
-  <div class="form-group col-3">
-    <label for="field">Field</label>
-    <input type="text" class="form-control" id="field">
-  </div>
-    <button class="btn btn-primary" id="save-changes">Save</button>
-    <button class="btn btn-primary" id="cancel-changes">Cancel Changes</button>
-
-</div>
-
 
 <div class="alert alert-success invisible mt-3" id="save-success-message" role="alert">
   Changes Saved!!
