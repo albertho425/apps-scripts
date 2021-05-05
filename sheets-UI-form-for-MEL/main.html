@@ -1,0 +1,372 @@
+<!-- the main page when you open the from from the spreadsheet -->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <style>
+      .nav-link {
+        cursor:pointer;
+      }
+      
+      body {
+        background-color: #D5D8DC;
+      }
+      .docs-gm .modal-dialog, .docs-gm .docs-offline-optinpromo.jfk-bubble, .docs-gm .docs-sync-indicator-popup.jfk-bubble {
+    background-color: yellow;
+      }
+
+      #loading {
+        position:fixed;
+        top:0;
+        left:0;
+        z-index:10000;
+        width:100vw;
+        height:100vh;
+        background-color: rgba(255,255,255,0.9);
+      }
+    </style>
+
+</head>
+  <body>
+    
+    
+    <div class="container">
+      <nav id="navigation" class="mb-3">
+        <ul class="nav nav-tabs main-nav">
+          <li class="nav-item">
+            <div class="nav-link active" id="search-link">Search the MEL</div>
+          </li>
+          <li class="nav-item">
+            <div class="nav-link" id="add-customer-link">Add to the MEL</div>
+          </li>
+        </ul>
+      </nav>
+    
+      <div id="app"></div>
+      <!-- Content here -->
+      </div>
+      
+      <div id="loading" class="d-flex justify-content-center align-items-center invisible">
+         <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+         </div>
+      </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script>
+      var data;
+
+      /*************************************************************
+      *  
+      **************************************************************/
+
+
+      function loadView(options){
+        var id = typeof options.id === "undefined" ? "app" :  options.id; 
+        var cb = typeof options.callback === "undefined" ? function(){} :  options.callback;
+        loadingStart();
+        google.script.run.withSuccessHandler(function(html){
+           document.getElementById(id).innerHTML = html;
+           loadingEnd();
+           typeof options.params === "undefined" ? cb() : cb(options.params);
+        })[options.func]();        
+      }
+      
+      /*************************************************************
+      *  
+      **************************************************************/
+
+
+      function setDataForSearch(){
+        loadingStart();
+        google.script.run.withSuccessHandler(function(dataReturned){ 
+          data = dataReturned.slice();
+          loadingEnd();
+        }).getDataForSearch();
+      }
+      
+      /*************************************************************
+      *  
+      **************************************************************/
+
+
+      function search(){
+      
+        var searchInput = document.getElementById("searchInput").value.toString().toLowerCase().trim();
+        var searchWords = searchInput.split(/\s+/);
+        var searchColumns = [1,2];
+        // and or
+        
+        var resultsArray = searchInput === "" ? [] : data.filter(function(r){  
+         
+          return searchWords.every(function(word){
+            return searchColumns.some(function(colIndex){
+              return r[colIndex].toString().toLowerCase().indexOf(word) !== -1
+            });
+          });
+         
+        });
+        
+        var recordCount = searchInput === "" ? "" : "Count: " + resultsArray.length;
+        document.getElementById("searchCounter").textContent = recordCount;
+        
+        var searchResultsBox = document.getElementById("searchResults");
+        var templateBox = document.getElementById("rowTemplate");
+        var template = templateBox.content;
+        
+        searchResultsBox.innerHTML = "";
+        
+        resultsArray.forEach(function(r){
+          
+          var tr = template.cloneNode(true);
+          var custIDColumn = tr.querySelector(".custID");
+          var firstNameColumn = tr.querySelector(".firstName");
+          var lastNameColumn = tr.querySelector(".lastName");
+          // var phoneColumn = tr.querySelector(".phoneNumber");
+          // var eventColumn = tr.querySelector(".eventName");
+          // var department = tr.querySelector(".department");
+
+          var deleteButton = tr.querySelector(".delete-button");
+          var editButton = tr.querySelector(".edit-button");
+          
+          custIDColumn.textContent = r[0];
+          deleteButton.dataset.customerId = r[0];
+          editButton.dataset.customerId = r[0];
+          firstNameColumn.textContent = r[1];
+          lastNameColumn.textContent = r[2];
+          searchResultsBox.appendChild(tr);
+        
+        });
+      
+      }
+      
+      /*************************************************************
+      *  Display delete confimration message
+      **************************************************************/
+
+      function displayConfirmationDelete(e){      
+        if(e.target.dataset.buttonState === "delete"){
+          e.target.previousElementSibling.classList.remove("d-none");
+          e.target.textContent = "Cancel";
+          e.target.dataset.buttonState = "cancel";
+        } else {   
+          e.target.previousElementSibling.classList.add("d-none");
+          e.target.textContent = "Delete";
+          e.target.dataset.buttonState = "delete";   
+        }
+      }
+      
+      /*************************************************************
+      *  
+      **************************************************************/
+
+
+      function deleteCustomer(e){
+      
+        var custID = e.target.dataset.customerId;
+        loadingStart();
+        google.script.run.withSuccessHandler(function(){
+          e.target.closest(".result-box").remove();
+          var ids = data.map(function(r){ return r[0].toString().toLowerCase() });
+          var index = ids.indexOf(custID.toString().toLowerCase());
+          data.splice(index,1);
+          loadingEnd();
+        }).deleteById(custID);
+      
+      }
+      
+      /*************************************************************
+      *  
+      **************************************************************/
+
+      
+      function afterEditViewLoads(params){
+        //{custID: 32}
+        //loading
+        loadingStart();
+        document.getElementById("customer-id").value = params.custID;
+        google.script.run.withSuccessHandler(function(customerInfo){
+          document.getElementById("first-name").value = customerInfo.firstName;
+          document.getElementById("last-name").value = customerInfo.lastName;
+          document.getElementById("phone-number").value = customerInfo.phoneNumber;
+          document.getElementById("event-name").value = customerInfo.eventName;
+          document.getElementById("department").value = customerInfo.department;
+          //done loading
+          loadingEnd();
+        }).getCustomerById(params.custID);
+      }
+      
+      /*************************************************************
+      *  Edit a row
+      **************************************************************/
+
+      function editCustomer(){
+          loadingStart();
+          var customerInfo = {};
+          customerInfo.firstName = document.getElementById("first-name").value;
+          customerInfo.lastName = document.getElementById("last-name").value;
+          customerInfo.phoneNumber = document.getElementById("phone-number").value;
+          customerInfo.eventName = document.getElementById("event-name").value;
+          customerInfo.department = document.getElementById("department").value;
+          
+          var id = document.getElementById("customer-id").value;
+          
+          google.script.run.withSuccessHandler(function(res){
+            document.getElementById("save-success-message").classList.remove("invisible");
+            loadingEnd();
+            setTimeout(function(){
+              document.getElementById("save-success-message").classList.add("invisible");
+            },2000);
+            
+          }).editCustomerById(id,customerInfo);
+      
+      }
+      
+      /*************************************************************
+      *  Add a row
+      **************************************************************/
+
+      function addCustomer(){
+          loadingStart();
+          var customerInfo = {};
+          customerInfo.firstName = document.getElementById("first-name").value;
+          customerInfo.lastName = document.getElementById("last-name").value;
+          customerInfo.phoneNumber = document.getElementById("phone-number").value;  
+          customerInfo.eventName = document.getElementById("event-name").value;  
+          customerInfo.department = document.getElementById("department").value;  
+          
+          //clear the input boxes
+          google.script.run.withSuccessHandler(function(){
+            document.getElementById("first-name").value = "";
+            document.getElementById("last-name").value = "";
+            document.getElementById("phone-number").value = "";
+            document.getElementById("event-name").value = "";
+            document.getElementById("department").value = "";
+            document.getElementById("save-success-message").classList.remove("invisible");
+            loadingEnd();
+            setTimeout(function(){
+              document.getElementById("save-success-message").classList.add("invisible");
+            },2000);            
+          }).addCustomer(customerInfo);
+        
+      }
+      
+      /*************************************************************
+      *  
+      **************************************************************/
+
+      
+      function loadSearchView(){
+        loadView({func: "loadSearchView", callback: setDataForSearch });
+      }
+
+      /*************************************************************
+      *  
+      **************************************************************/
+
+      function loadAddCustomerView(){
+        loadView({func: "loadAddCustomersView"});
+      }
+
+      /*************************************************************
+      *  
+      **************************************************************/
+
+      function loadEditCustomerView(e){
+        loadView({func: "loadEditCustomersView", callback: afterEditViewLoads, params: {custID: e.target.dataset.customerId} });
+      }
+      /*************************************************************
+      *  
+      **************************************************************/
+      
+      function activeTabChange(e){
+        var navLinks = document.querySelectorAll(".main-nav .nav-link");
+        navLinks.forEach(function(linkEl){
+          linkEl.classList.remove("active");
+        });
+        e.target.classList.add("active");
+      }
+      /*************************************************************
+      *  
+      **************************************************************/
+      
+      function loadingStart(){
+        document.getElementById("loading").classList.remove("invisible");
+      }
+
+      /*************************************************************
+      *  
+      **************************************************************/
+
+
+      function loadingEnd(){
+        document.getElementById("loading").classList.add("invisible");
+      }      
+      
+      document.getElementById("search-link").addEventListener("click",loadSearchView);
+      document.getElementById("add-customer-link").addEventListener("click",loadAddCustomerView);
+      
+      /*************************************************************
+      *  
+      **************************************************************/
+
+      function inputEventHandler(e){
+        if(e.target.matches("#searchInput")){
+          search();
+        }
+      }
+
+      /*************************************************************
+      *  
+      **************************************************************/
+
+      function clickEventHandler(e){
+        if(e.target.matches(".delete-button")){
+          deleteCustomer(e);
+        }
+        if(e.target.matches(".before-delete-button")){
+          displayConfirmationDelete(e);
+        }
+        if(e.target.matches(".edit-button")){
+          loadEditCustomerView(e);
+        }
+        if(e.target.matches("#save-changes")){
+          editCustomer();
+        }
+        if(e.target.matches("#cancel-changes")){
+          loadSearchView();
+        }
+        if(e.target.matches("#add-customer-button")){
+          addCustomer();
+        }           
+        
+      }
+      
+      /*************************************************************
+      *  
+      **************************************************************/
+
+      function navClickEventHandler(e){
+        if(e.target.matches(".nav-link")){
+          activeTabChange(e);
+        }        
+      }
+      document.getElementById("app").addEventListener("input",inputEventHandler);
+      document.getElementById("app").addEventListener("click",clickEventHandler);
+      document.getElementById("navigation").addEventListener("click",navClickEventHandler);
+      document.addEventListener("DOMContentLoaded",loadSearchView);
+      
+    </script>
+</body>
+</html>
