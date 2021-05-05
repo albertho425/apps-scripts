@@ -10,7 +10,7 @@ function getDataForSearch() {
 }
 
 /*************************************************************
-*  delete a row by the ID number
+*  delete a row of customer data by the ID number
 **************************************************************/
 
 function deleteById(id){
