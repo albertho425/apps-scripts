@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- <base target="_top"> -->
+         <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+        <?!= include('JavaScript'); ?>
+    </head>
+
+
+<body style="background-color: grey">
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-dark bg-dark">
+  <span class="navbar-brand mb-0 h1"><i class="fas fa-id-card fa-2x"></i> Contact Form to Spreadsheet and Email</span>
+</nav>
+
+
+
+<div class="container">
+        <!-- Form -->
+        <form id="myForm" onsubmit="handleFormSubmit(this)">
+
+            
+            <!-- Row -->
+            <div class="form-row mt-5 mb-5">
+            <div class="form-group col-md-6">
+                <label><i class="fas fa-keyboard"></i> Name</label> <span
+                    id="name" ></span><br /> <input
+                    type="text" class="form-control" name="name"
+                    id="name" required />
+            </div>
+            <div class="form-group col-md-6">
+                <label><i class="far fa-envelope"></i> Email</label> <span
+                    id="email" ></span><br /> <input
+                    type="email" class="form-control" name="email"
+                    id="email" required/>
+            </div>
+            </div>
+            <!-- End of Row -->
+            
+            <!-- Row -->
+            <div class="form-row mt-5 mb-5">
+            <div class="form-group col-md-3">
+                <label for="date"><i class="far fa-calendar-alt"></i> Start Date</label> <span
+                    id="startDate" ></span><br /> <input
+                    type="date" class="form-control" name="startDate"
+                    id="startDate" />
+            </div>
+            <div class="form-group col-md-3">
+                <label for="date"><i class="far fa-calendar-alt"></i> End Date</label> <span
+                    id="endDate" ></span><br /> <input
+                    type="date" class="form-control" name="endDate"
+                    id="endDate" />
+            </div>    
+            <div class="form-group col-md-3">
+                <label for="startTime"><i class="fas fa-stopwatch"></i> Start Time</label> <span
+                    id="startTime" ></span><br /> <input
+                    type="time" class="form-control" name="startTime"
+                    id="startTime" />
+            </div>    
+            <div class="form-group col-md-3">
+                <label for="date"><i class="fas fa-stopwatch"></i> End Time</label> <span
+                    id="endTime" ></span><br /> <input
+                    type="time" class="form-control" name="endTime"
+                    id="endTime" />
+            </div>   
+            </div>
+            <!-- End of Row -->
+            
+            
+
+            <!-- Row -->
+            <div class="form-row mt-5 mb-5">
+            <div class="form-group col-md-6 ms-5">
+            
+            <label for="affiiation"><i class="fas fa-question"></i> Affiliation</label>
+            <select class="form-control" id="affiliation" name="affiliation" required>
+            <option>Select</option>
+            <option>Internal</option>
+            <option>External</option>
+            <option>Private</option>
+            <option>Other</option>
+            </select>
+            
+            
+            </div> 
+            
+            <div class="form-group col-md-6">
+            
+            <label for="enquiryType"><i class="fas fa-info-circle"></i>Department</label>
+            <select class="form-control" id="department" name="department" required>
+            <option>Select</option>
+            <option>Accounting</option>
+            <option>Customer Service</option>
+            <option>Human Resources</option>
+            <option>Information Technology</option>
+            <option>Special Events</option>
+            </select>
+            
+            </div>    
+            </div>
+            <!-- End of Row -->
+
+            
+            
+            <!-- Row -->
+            <div class="form-row mt-5 mb-5">
+            <div class="form-group col-md-6">
+                <label><i class="far fa-sticky-note"></i> Event Name</label> <span
+                    id="eventName"></span><br /> <input
+                    type="text" class="form-control" name="eventName"
+                    id="eventName" required/>
+            </div>
+            <div class="form-group col-md-6">
+                <label><i class="fas fa-inbox"></i></i>Comments</label> <span
+                    id="comments" ></span><br /> <input
+                    type="textarea" class="form-control" name="comments"
+                    id="comments" required/>
+            </div>
+            </div>
+            <!-- End of Row -->
+  
+        <button type="submit" name="submit" class="btn btn-primary btn-md">Submit</button>
+</form>
+
+
+
+</div> <!-- container -->
+
+
+
+</body>
+</html>
