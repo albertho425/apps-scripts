@@ -1,4 +1,5 @@
-<!-- the main page when you open the from from the spreadsheet -->
+<!-- main page as well as main functions -->
+
 
 <!doctype html>
 <html lang="en">
@@ -14,13 +15,17 @@
       .nav-link {
         cursor:pointer;
       }
-      
+
+      /* body background color   */
       body {
-        background-color: #D5D8DC;
+        background-color: #ffcc00;
       }
-      .docs-gm .modal-dialog, .docs-gm .docs-offline-optinpromo.jfk-bubble, .docs-gm .docs-sync-indicator-popup.jfk-bubble {
-    background-color: yellow;
-      }
+
+
+      .btn-outline-dark {
+     color: white;
+      border-color: red;
+    }
 
       #loading {
         position:fixed;
@@ -29,7 +34,7 @@
         z-index:10000;
         width:100vw;
         height:100vh;
-        background-color: rgba(255,255,255,0.9);
+        background-color: #ffcc00;
       }
     </style>
 
@@ -66,12 +71,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script>
       var data;
-
-      /*************************************************************
-      *  
-      **************************************************************/
-
-
+      
       function loadView(options){
         var id = typeof options.id === "undefined" ? "app" :  options.id; 
         var cb = typeof options.callback === "undefined" ? function(){} :  options.callback;
@@ -83,10 +83,9 @@
         })[options.func]();        
       }
       
-      /*************************************************************
-      *  
-      **************************************************************/
-
+/*************************************************************
+*  
+**************************************************************/
 
       function setDataForSearch(){
         loadingStart();
@@ -95,10 +94,10 @@
           loadingEnd();
         }).getDataForSearch();
       }
-      
-      /*************************************************************
-      *  
-      **************************************************************/
+
+/*************************************************************
+*  
+**************************************************************/
 
 
       function search(){
@@ -118,8 +117,8 @@
          
         });
         
-        var recordCount = searchInput === "" ? "" : "Count: " + resultsArray.length;
-        document.getElementById("searchCounter").textContent = recordCount;
+        // var recordCount = searchInput === "" ? "" : "Record Count: " + resultsArray.length;
+        // document.getElementById("searchCounter").textContent = recordCount;
         
         var searchResultsBox = document.getElementById("searchResults");
         var templateBox = document.getElementById("rowTemplate");
@@ -133,10 +132,6 @@
           var custIDColumn = tr.querySelector(".custID");
           var firstNameColumn = tr.querySelector(".firstName");
           var lastNameColumn = tr.querySelector(".lastName");
-          // var phoneColumn = tr.querySelector(".phoneNumber");
-          // var eventColumn = tr.querySelector(".eventName");
-          // var department = tr.querySelector(".department");
-
           var deleteButton = tr.querySelector(".delete-button");
           var editButton = tr.querySelector(".edit-button");
           
@@ -150,10 +145,11 @@
         });
       
       }
-      
-      /*************************************************************
-      *  Display delete confimration message
-      **************************************************************/
+
+/*************************************************************
+*  
+**************************************************************/
+
 
       function displayConfirmationDelete(e){      
         if(e.target.dataset.buttonState === "delete"){
@@ -166,10 +162,9 @@
           e.target.dataset.buttonState = "delete";   
         }
       }
-      
-      /*************************************************************
-      *  
-      **************************************************************/
+/*************************************************************
+*  
+**************************************************************/
 
 
       function deleteCustomer(e){
@@ -186,11 +181,10 @@
       
       }
       
-      /*************************************************************
-      *  
-      **************************************************************/
-
-      
+/*************************************************************
+*  
+**************************************************************/
+     
       function afterEditViewLoads(params){
         //{custID: 32}
         //loading
@@ -207,9 +201,11 @@
         }).getCustomerById(params.custID);
       }
       
-      /*************************************************************
-      *  Edit a row
-      **************************************************************/
+/*************************************************************
+*  edit a customer.  calls the edit function with 
+*  customer ID and customer Object
+**************************************************************/
+
 
       function editCustomer(){
           loadingStart();
@@ -232,27 +228,30 @@
           }).editCustomerById(id,customerInfo);
       
       }
-      
-      /*************************************************************
-      *  Add a row
-      **************************************************************/
+
+/*************************************************************
+*  add a customer
+**************************************************************/
+
 
       function addCustomer(){
           loadingStart();
           var customerInfo = {};
+          // gets the value and assigns to object
           customerInfo.firstName = document.getElementById("first-name").value;
           customerInfo.lastName = document.getElementById("last-name").value;
           customerInfo.phoneNumber = document.getElementById("phone-number").value;  
-          customerInfo.eventName = document.getElementById("event-name").value;  
+          customerInfo.eventName = document.getElementById("event-name").value;
           customerInfo.department = document.getElementById("department").value;  
           
-          //clear the input boxes
+          // clear the form
           google.script.run.withSuccessHandler(function(){
             document.getElementById("first-name").value = "";
             document.getElementById("last-name").value = "";
             document.getElementById("phone-number").value = "";
             document.getElementById("event-name").value = "";
             document.getElementById("department").value = "";
+            
             document.getElementById("save-success-message").classList.remove("invisible");
             loadingEnd();
             setTimeout(function(){
@@ -261,35 +260,36 @@
           }).addCustomer(customerInfo);
         
       }
-      
-      /*************************************************************
-      *  
-      **************************************************************/
+
+/*************************************************************
+* 
+**************************************************************/
 
       
       function loadSearchView(){
         loadView({func: "loadSearchView", callback: setDataForSearch });
       }
 
-      /*************************************************************
-      *  
-      **************************************************************/
+/*************************************************************
+*  
+**************************************************************/
 
       function loadAddCustomerView(){
         loadView({func: "loadAddCustomersView"});
       }
 
-      /*************************************************************
-      *  
-      **************************************************************/
+/*************************************************************
+*  
+**************************************************************/
 
       function loadEditCustomerView(e){
         loadView({func: "loadEditCustomersView", callback: afterEditViewLoads, params: {custID: e.target.dataset.customerId} });
       }
-      /*************************************************************
-      *  
-      **************************************************************/
-      
+
+/*************************************************************
+*  
+**************************************************************/
+
       function activeTabChange(e){
         var navLinks = document.querySelectorAll(".main-nav .nav-link");
         navLinks.forEach(function(linkEl){
@@ -297,18 +297,16 @@
         });
         e.target.classList.add("active");
       }
-      /*************************************************************
-      *  
-      **************************************************************/
       
+/*************************************************************
+*  
+**************************************************************/
       function loadingStart(){
         document.getElementById("loading").classList.remove("invisible");
       }
-
-      /*************************************************************
-      *  
-      **************************************************************/
-
+/*************************************************************
+*  
+**************************************************************/
 
       function loadingEnd(){
         document.getElementById("loading").classList.add("invisible");
@@ -316,20 +314,19 @@
       
       document.getElementById("search-link").addEventListener("click",loadSearchView);
       document.getElementById("add-customer-link").addEventListener("click",loadAddCustomerView);
-      
-      /*************************************************************
-      *  
-      **************************************************************/
 
+/*************************************************************
+*  
+**************************************************************/
       function inputEventHandler(e){
         if(e.target.matches("#searchInput")){
           search();
         }
       }
 
-      /*************************************************************
-      *  
-      **************************************************************/
+/*************************************************************
+*  
+**************************************************************/
 
       function clickEventHandler(e){
         if(e.target.matches(".delete-button")){
@@ -352,10 +349,10 @@
         }           
         
       }
-      
-      /*************************************************************
-      *  
-      **************************************************************/
+
+/*************************************************************
+*  
+**************************************************************/
 
       function navClickEventHandler(e){
         if(e.target.matches(".nav-link")){
